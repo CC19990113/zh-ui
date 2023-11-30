@@ -1,41 +1,24 @@
 # zh-ui
 
-This template should help get you started developing with Vue 3 in Vite.
+小竹合的ui库，刚刚开始写，希望各位大佬指导指导
 
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
+# how to use?
+```
+npm install xiaozh-ui
 ```
 
-### Compile and Hot-Reload for Development
+全局引入方式
 
-```sh
-npm run dev
+main.js 引入
+```js
+import ZhUI from "xiaozh-ui"
+import 'xiaozh-ui/style.css';
+
+app.use(ZhUI)
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-npm run test:unit
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
+vue文件中使用
+```vue
+<zh-button type="success">按我</zh-button>
+<zh-button type="warning">按你</zh-button>
 ```
