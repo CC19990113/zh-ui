@@ -1,6 +1,6 @@
 // @ts-nocheck
-import tButton from "./index.vue";
-tButton.install = (app) => {
-  app.component(tButton.name, tButton);
+import ZhButton from "./index.vue";
+ZhButton.install = (app) => {
+  app.component(ZhButton.name, ZhButton);
 };
-export default tButton;
+export default ZhButton;

@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 console.log('props', props.type)
 const tClass = computed(() => {
-  return ['t-button', `t-button-${props.type}`]
+  return ['zh-button', `zh-button-${props.type}`]
 })
 </script>
 
@@ -30,7 +30,7 @@ button {
   background: none;
   cursor: pointer;
 }
-.t-button {
+.zh-button {
   button {
     padding: 12px 20px;
     border: 1px solid #ccc;
@@ -41,19 +41,19 @@ button {
     }
   }
 }
-.t-button-default {
+.zh-button-default {
   button {
     background: #b4b0b0;
     color: #000;
   }
 }
-.t-button-success {
+.zh-button-success {
   button {
     background: #0eac77;
     color: #fff;
   }
 }
-.t-button-warning {
+.zh-button-warning {
   button {
     background: red;
     color: #fff;

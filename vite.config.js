@@ -16,13 +16,17 @@ export default defineConfig({
       output: {
         globals: {
           vue: "Vue"
-        }
+        },
+        // manualChunks: {
+        //   // Specify the chunk name for styles
+        //   'xiaozh-ui': ['./dist/style.css'],
+        // },
       }
     },
     lib: {
       // 打包的入口
       entry: "./packages/index.js",
-      name: "zh-ui",
+      name: "xiaozh-ui",
     },
   },
   resolve: {
