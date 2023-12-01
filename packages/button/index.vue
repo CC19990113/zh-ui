@@ -1,63 +1,125 @@
-<!-- -->
+<!-- button组件 -->
 <template>
-  <div :class="tClass">
-    <button><slot /></button>
+  <div :class="ZhClass">
+    <button>
+      <slot></slot>
+    </button>
   </div>
 </template>
-<script lang="ts">
+
+<script>
 export default {
   name: 'ZhButton'
 }
 </script>
-<script setup lang="ts">
+
+<script setup>
 import { computed } from 'vue'
-type Props = {
-  type?: string
-}
-const props = withDefaults(defineProps<Props>(), {
-  type: 'default'
+const props = defineProps({
+  type: {
+    type: String,
+    default: 'default'
+  },
+  size: {
+    type: String,
+    default: 'normal'
+  },
+  round: {
+    type: Boolean,
+    default: false
+  },
+  disabled: {
+    type: Boolean,
+    default: false
+  }
 })
-console.log('props', props.type)
-const tClass = computed(() => {
-  return ['zh-button', `zh-button-${props.type}`]
+console.log('===>', props)
+const ZhClass = computed(() => {
+  const classList = ['zh-button', `zh-button-${props.type}`, `zh-button-${props.size}`]
+  if (props.round) {
+    classList.push('zh-button-round')
+  }
+  if (props.disabled) {
+    classList.push('zh-button-disabled')
+  }
+  return classList
 })
 </script>
 
 <style lang="scss" scoped>
 button {
+  /* 重置默认样式 */
+  margin: 0;
+  padding: 0;
+  border: none;
   outline: none;
-  border: 0;
-  background: none;
-  cursor: pointer;
+  font-size: 100%;
+  vertical-align: baseline;
+  background: transparent;
 }
+$colors: (
+  primary: #409eff,
+  success: #67c23a,
+  info: #909399,
+  warning: #e6a23c,
+  danger: #f56c6c
+);
 .zh-button {
-  button {
-    padding: 12px 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    &:hover,
-    &:focus {
-      opacity: 0.7;
+  display: inline-block;
+  box-sizing: border-box;
+  border-radius: 4px;
+  text-align: center;
+  border: 1px solid #333;
+  &:hover,
+  :focus {
+    opacity: 0.7;
+  }
+}
+
+@each $key, $value in $colors {
+  .zh-button-#{$key} {
+    background: $value;
+    border: 1px solid $value;
+    button {
+      color: #fff;
     }
   }
 }
-.zh-button-default {
-  button {
-    background: #b4b0b0;
-    color: #000;
-  }
+
+.zh-button-normal {
+  margin-right: 15px;
+  padding: 0 8px;
+  height: 32px;
+  font-size: 16px;
+  line-height: 30px;
 }
-.zh-button-success {
-  button {
-    background: #0eac77;
-    color: #fff;
-  }
+
+.zh-button-big {
+  margin-right: 22px;
+  padding: 0 12px;
+  height: 48px;
+  border-radius: 6px;
+  font-size: 24px;
+  line-height: 46px;
 }
-.zh-button-warning {
+
+.zh-button-small {
+  margin-right: 10px;
+  padding: 0 6px;
+  height: 22px;
+  border-radius: 3px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.zh-button-round {
+  border-radius: 1em;
+}
+.zh-button-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
   button {
-    background: red;
-    color: #fff;
+    cursor: not-allowed;
   }
 }
 </style>
-
