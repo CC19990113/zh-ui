@@ -2,6 +2,15 @@
 
 小竹合的ui库，刚刚开始写，希望各位大佬指导指导
 
+# 开发规范
+packages 文件目录下放组件格式为 新建文件夹 button下才放index.js index.vue
+
+examples目录下放使用示例 格式为 新建文件夹 button 下放index.vue
+
+新建分支规范: zh-feat/button zh-开发者 feat 新功能 button分支名
+
+不要擅自发版! 版本号需要依次递增 找我就好
+
 # how to use?
 ```
 npm install xiaozh-ui
