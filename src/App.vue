@@ -1,13 +1,10 @@
-
 <template>
-  <zh-button type="warning" round disabled>按ew123qwq我</zh-button>
-  <zh-button size="big" round>123</zh-button>
-  <zh-button size="big">123</zh-button>
-  <zh-button size="big">123</zh-button>
-  <zh-button size="big">123</zh-button>
+  <Message />
 </template>
 
 <script setup>
+import Message from '../packages/Message/Message.vue';
+
 </script>
 
 <style scoped>
