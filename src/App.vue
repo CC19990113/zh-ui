@@ -1,14 +1,13 @@
 
+
 <template>
-  <zh-button type="warning" round disabled>按ew123qwq我</zh-button>
-  <zh-button size="big" round>123</zh-button>
-  <zh-button size="big">123</zh-button>
-  <zh-button size="big">123</zh-button>
-  <zh-button size="big">123</zh-button>
+  <ZhButtonExampleVue></ZhButtonExampleVue>
 </template>
 
 <script setup>
+import ZhButtonExampleVue from "../examples/button/ZhButtonExample.vue";
 </script>
 
 <style scoped>
+
 </style>
