@@ -1,8 +1,25 @@
-<!-- button组件 -->
+<!--
+  ZhButton 组件：
+  - ZhButton 是一个可定制的按钮组件，支持不同的样式、大小和加载状态。
+  - 通过传递不同的 props 控制组件的外观和行为。
+  @component ZhButton
+  @props
+    {String} type - 按钮类型 'primary' 'success' 'info' 'warning' 'danger'
+    {String} size - 按钮大小 'big' 'normal' 'small'
+    {Boolean} round - 是否为椭圆 true false
+    {Boolean} disabled - 是否禁用 true false
+    {Boolean} loading - 加载状态 true false
+-->
 <template>
   <div :class="ZhClass">
     <button>
-      <slot></slot>
+      <div class="zh-button-loading" v-if="loading">
+        <div class="loading-content">
+          <div :class="['spinner', `spinner-${size}`]"></div>
+          加载中
+        </div>
+      </div>
+      <slot v-else></slot>
     </button>
   </div>
 </template>
@@ -16,19 +33,28 @@ export default {
 <script setup>
 import { computed } from 'vue'
 const props = defineProps({
+  // 按钮类型 'primary' 'success' 'info' 'warning' 'danger'
   type: {
     type: String,
     default: 'default'
   },
+  // 按钮大小 'big' 'normal' 'small'
   size: {
     type: String,
     default: 'normal'
   },
+  // 是否为椭圆 true false
   round: {
     type: Boolean,
     default: false
   },
+  // 是否禁用 true false
   disabled: {
+    type: Boolean,
+    default: false
+  },
+  // 加载状态 true false
+  loading: {
     type: Boolean,
     default: false
   }
@@ -47,6 +73,8 @@ const ZhClass = computed(() => {
 </script>
 
 <style lang="scss" scoped>
+@import '../assets/common.scss';
+
 button {
   /* 重置默认样式 */
   margin: 0;
@@ -57,13 +85,7 @@ button {
   vertical-align: baseline;
   background: transparent;
 }
-$colors: (
-  primary: #409eff,
-  success: #67c23a,
-  info: #909399,
-  warning: #e6a23c,
-  danger: #f56c6c
-);
+
 .zh-button {
   display: inline-block;
   box-sizing: border-box;
@@ -76,6 +98,7 @@ $colors: (
   }
 }
 
+// 颜色样式
 @each $key, $value in $colors {
   .zh-button-#{$key} {
     background: $value;
@@ -86,6 +109,7 @@ $colors: (
   }
 }
 
+// 大小样式
 .zh-button-normal {
   margin-right: 15px;
   padding: 0 8px;
@@ -112,14 +136,52 @@ $colors: (
   line-height: 20px;
 }
 
+// 椭圆样式
 .zh-button-round {
   border-radius: 1em;
 }
+
+// 禁用样式
 .zh-button-disabled {
   opacity: 0.7;
   cursor: not-allowed;
   button {
     cursor: not-allowed;
+  }
+}
+
+// 加载中样式
+.zh-button-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.spinner {
+  display: inline-block;
+  border: 2px solid #3498db;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+$spinner-sizes: (
+  normal: 15px,
+  big: 20px,
+  small: 10px
+);
+
+@each $size, $value in $spinner-sizes {
+  .spinner-#{$size} {
+    width: $value;
+    height: $value;
   }
 }
 </style>
