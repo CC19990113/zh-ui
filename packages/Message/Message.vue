@@ -1,8 +1,8 @@
 <template>
   <div class="zh-message-box">
-    <TransitionGroup name="list" tag="div">
+    <TransitionGroup name="list" tag="div" style="display: flex; align-items: center;; flex-direction: column;">
       <div
-        v-for="(item,index) in messageList"
+        v-for="(item) in messageList"
         :key="item.id"
         :class="['zh-message', `zh-message-${item.type}`]"
       >
@@ -68,7 +68,6 @@ const close = (item: { id: number; }) => {
 //   clearTimeout(Number(timerList.value![index]))
 // }
 // 
-
 defineExpose({
   info,
   success,
