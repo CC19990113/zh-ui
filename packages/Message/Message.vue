@@ -1,11 +1,10 @@
 <template>
-   <Transition ref="message" name="message-fade" @after-leave="handleAfterLeave">
-    <div v-if="showMessage" :class="ZhClass" @mouseenter="clearTimerFn"
+   <Transition-group ref="message" name="message-fade" @after-leave="handleAfterLeave">
+    <div :class="ZhClass" @mouseenter="clearTimerFn"
       @mouseleave="startTimerFn">
-    <!-- <i :class="ZhIconClass"></i> -->
     <span @click="handleAfterLeave">{{props.content}}</span>
   </div>
-</Transition>
+</Transition-group>
 
 </template>
 
@@ -34,6 +33,17 @@ const props = defineProps({
 const ZhClass = computed(() => {
   return ['zh-message', `zh-message-${props.type}`]
 })
+const info = (options)=>{initMessage(options,'info')}
+const success = (options)=>{initMessage(options,'success')}
+const warning = (options)=>{initMessage(options,'warning')}
+const danger = (options)=>{initMessage(options,'danger')}
+const initMessage = (options, type = 'info') => {
+  let option = options || {}
+  option.type = type
+  const config = {
+    
+  }
+}
 const showMessage = ref(true)
 const timer = ref<null | NodeJS.Timeout>(null)
 const message = ref() // 当前组件实例
