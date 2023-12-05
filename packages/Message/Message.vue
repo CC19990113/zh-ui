@@ -41,7 +41,8 @@ const initMessage = (options, type = 'info') => {
   let option = options || {}
   option.type = type
   const config = {
-    
+    type: option.type,
+    message: option.message || 'message',
   }
 }
 const showMessage = ref(true)

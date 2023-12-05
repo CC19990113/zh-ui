@@ -1,3 +1,4 @@
+
 <template>
   <Message />
 </template>
@@ -8,4 +9,5 @@ import Message from '../packages/Message/Message.vue';
 </script>
 
 <style scoped>
+
 </style>
