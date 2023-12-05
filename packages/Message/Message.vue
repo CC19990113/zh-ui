@@ -1,9 +1,10 @@
 <template>
     <div class="zh-message-box">
       <div
-      v-for="item in messageList"
+      v-for="(item,index) in messageList"
       :key="item.id"
       :class="['zh-message', `zh-message-${item.type}`]"
+      :ref= 'el => { if (el) contentList[index] = el}'
       @mouseenter="clearTimerFn"
       @mouseleave="startTimerFn"
     >
@@ -13,13 +14,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-type Option = {type:string,message:string,id:number}
+import { ComponentOptionsBase, ComponentPublicInstance, ref, watch } from 'vue'
+type Option = {type:string,message:string,id:number,duration:number}
 setInterval(() => {
   // success({})
   // console.log(messageList.value.length);
 }, 2000);
 const messageList = ref([] as Option[])
+const contentList = ref([] as Element| ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}>[])
 const info = (options:Option)=>{initMessage(options,'info')}
 const success = (options:Option)=>{initMessage(options,'success')}
 const warning = (options:Option)=>{initMessage(options,'warning')}
@@ -30,9 +32,20 @@ const initMessage = (options:Option, type = 'info') => {
   const config = {
     type: option.type,
     message: option.message || 'message',
+    duration: options.duration>0? options.duration : 3000,
     id: +new Date().getTime()
   }
   messageList.value.push(config)
+  // 如果传入的倒计时不为0 就开启倒计时
+  if (config.duration != 0) {
+    // 倒计时开启的时候先给需要隐藏的元素加类名，然后再删除
+    setTimeout(() => {
+      contentList.value[0].className += ' messageHide';
+      setTimeout(() => {
+        messageList.value.splice(0, 1);
+      }, 300);
+    }, config.duration + messageList.value.length * 1000);
+  }
 }
 watch(() => messageList.value.length, () => {
   console.log(messageList.value.length);
@@ -107,16 +120,13 @@ $backgroundColors: (
   margin-top: 20px;
   animation: messageShow .5s;
   animation-fill-mode: forwards;
+  animation-iteration-count:1; /*动画只执行一次*/
 }
 
-// 过渡效果样式
-.message-fade-enter,
-.message-fade-leave-active {
-  opacity: 0;
-  -webkit-transform: translate(-50%, -100%);
-  transform: translate(-50%, -100%);
-}
-
+.messageHide {
+        animation: messageHide .2s linear;
+        animation-fill-mode: forwards;
+    }
 @keyframes messageShow {
     0% {
         transform: translateY(-50px);
