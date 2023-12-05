@@ -6,7 +6,7 @@
 <script setup>
 import Message from '../packages/Message';
 const aa = () => {
-  Message.success({message:'123123',duration:5000})
+  Message.success({message:'123123',duration:3000,close: true})
 }
 // Message({ message: '123123', type: 'success' })
 

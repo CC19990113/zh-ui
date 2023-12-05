@@ -2,13 +2,12 @@
   <div class="zh-message-box">
     <TransitionGroup name="list" tag="div">
       <div
-      v-for="(item,index) in messageList"
-      :key="item.id"
-      :class="['zh-message', `zh-message-${item.type}`]"
-      @mouseenter="clearTimerFn(index)"
-      @mouseleave="startTimerFn(item,index)"
+        v-for="(item,index) in messageList"
+        :key="item.id"
+        :class="['zh-message', `zh-message-${item.type}`]"
       >
         <span>{{item.message}}</span>
+        <span class="close" v-if="item.close" @click="close(item)">X</span>
       </div>
     </TransitionGroup>
   </div>
@@ -16,7 +15,7 @@
 
 <script setup lang="ts">
 import {  ref, watch } from 'vue'
-type Option = {type:string,message:string,id:number,duration:number}
+type Option = {type:string,message:string,id:number,duration:number,close:boolean}
 const messageList = ref([] as Option[])
 const timerList = ref([] as null | NodeJS.Timeout[]) /*倒计时的数组*/
 const info = (options:Option)=>{initMessage(options,'info')}
@@ -29,7 +28,8 @@ const initMessage = (options:Option, type = 'info') => {
   const config = {
     type: option.type,
     message: option.message || 'message',
-    duration: options.duration>0? options.duration : 3000,
+    duration: options.duration > 0 ? options.duration : 3000,
+    close: option.close ? true : false,
     id: +new Date().getTime()
   }
   messageList.value.push(config)
@@ -46,24 +46,29 @@ watch(() => messageList.value.length, () => {
     messageList.value.shift()
   }
 })
-const showMessage = ref(true)
+const close = (item: { id: number; }) => {
+  const index = messageList.value.findIndex(items => items.id === item.id);
+  if (index != -1) {
+    messageList.value.splice(index, 1);
+  }
+}
 //鼠标离开之后开始计时
-const startTimerFn = (item,index) => {
-  // 时间大于0，开启倒计时，否则就是无限时间
-  if (item.duration > 0) {
-        timerList.value![index] = setTimeout(() => {
-          messageList.value.splice(0, 1);
-        }, item.duration);
-      }
-}
-//鼠标进入之后停止计时
-const clearTimerFn = (index) => {
-  clearTimeout(Number(timerList.value![index]))
-}
+// @mouseenter="clearTimerFn(index)"
+// @mouseleave="startTimerFn(item,index)"
+// const startTimerFn = (item: { duration: number | undefined; },index: string | number) => {
+//   // 时间大于0，开启倒计时，否则就是无限时间
+//   if (item.duration! > 0) {
+//         timerList.value![index] = setTimeout(() => {
+//           messageList.value.splice(0, 1);
+//         }, item.duration);
+//       }
+// }
+// //鼠标进入之后停止计时
+// const clearTimerFn = (index: string | number) => {
+//   clearTimeout(Number(timerList.value![index]))
+// }
 // 
-const close = () => {
-  showMessage.value = false
-}
+
 defineExpose({
   info,
   success,
@@ -110,6 +115,15 @@ $backgroundColors: (
   border-radius: 5px;
   padding: 0 15px;
   margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .close {
+    color: #999;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
 }
 
 .list-move,
