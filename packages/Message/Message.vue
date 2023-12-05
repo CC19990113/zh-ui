@@ -1,5 +1,6 @@
 <template>
     <div class="zh-message-box">
+      <TransitionGroup name="list" tag="div">
       <div
       v-for="(item,index) in messageList"
       :key="item.id"
@@ -10,16 +11,13 @@
     >
     <span>{{item.message}}</span>
   </div>
+</TransitionGroup>
     </div>
 </template>
 
 <script setup lang="ts">
 import { ComponentOptionsBase, ComponentPublicInstance, ref, watch } from 'vue'
 type Option = {type:string,message:string,id:number,duration:number}
-setInterval(() => {
-  // success({})
-  // console.log(messageList.value.length);
-}, 2000);
 const messageList = ref([] as Option[])
 const contentList = ref([] as Element| ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}>[])
 const info = (options:Option)=>{initMessage(options,'info')}
@@ -127,25 +125,38 @@ $backgroundColors: (
         animation: messageHide .2s linear;
         animation-fill-mode: forwards;
     }
-@keyframes messageShow {
-    0% {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
+// @keyframes messageShow {
+//     0% {
+//         transform: translateY(-50px);
+//         opacity: 0;
+//     }
+//     100% {
+//         transform: translateY(0);
+//         opacity: 1;
+//     }
+// }
 
-@keyframes messageHide {
-    0% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-50px);
-        opacity: 0;
-    }
+// @keyframes messageHide {
+//     0% {
+//         transform: translateY(0);
+//         opacity: 1;
+//     }
+//     100% {
+//         transform: translateY(-50px);
+//         opacity: 0;
+//     }
+// }
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(-50px);
+}
+.list-leave-active {
+  position: absolute;
 }
 </style>
