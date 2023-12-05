@@ -1,25 +1,24 @@
 <template>
-    <div class="zh-message-box">
-      <TransitionGroup name="list" tag="div">
+  <div class="zh-message-box">
+    <TransitionGroup name="list" tag="div">
       <div
       v-for="(item,index) in messageList"
       :key="item.id"
       :class="['zh-message', `zh-message-${item.type}`]"
-      :ref= 'el => { if (el) contentList[index] = el}'
-      @mouseenter="clearTimerFn"
-      @mouseleave="startTimerFn"
-    >
-    <span>{{item.message}}</span>
+      @mouseenter="clearTimerFn(index)"
+      @mouseleave="startTimerFn(item,index)"
+      >
+        <span>{{item.message}}</span>
+      </div>
+    </TransitionGroup>
   </div>
-</TransitionGroup>
-    </div>
 </template>
 
 <script setup lang="ts">
-import { ComponentOptionsBase, ComponentPublicInstance, ref, watch } from 'vue'
+import {  ref, watch } from 'vue'
 type Option = {type:string,message:string,id:number,duration:number}
 const messageList = ref([] as Option[])
-const contentList = ref([] as Element| ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}>[])
+const timerList = ref([] as null | NodeJS.Timeout[]) /*倒计时的数组*/
 const info = (options:Option)=>{initMessage(options,'info')}
 const success = (options:Option)=>{initMessage(options,'success')}
 const warning = (options:Option)=>{initMessage(options,'warning')}
@@ -36,37 +35,32 @@ const initMessage = (options:Option, type = 'info') => {
   messageList.value.push(config)
   // 如果传入的倒计时不为0 就开启倒计时
   if (config.duration != 0) {
-    // 倒计时开启的时候先给需要隐藏的元素加类名，然后再删除
-    setTimeout(() => {
-      contentList.value[0].className += ' messageHide';
-      setTimeout(() => {
+    timerList.value?.push(setTimeout(() => {
         messageList.value.splice(0, 1);
-      }, 300);
-    }, config.duration + messageList.value.length * 1000);
+    }, config.duration + messageList.value.length * 200))  
   }
 }
+// 最多存在15个弹窗
 watch(() => messageList.value.length, () => {
-  console.log(messageList.value.length);
-  // if (messageList.value.length >= 3) {
-    // messageList.value.shift()
-  // }
+  if (messageList.value.length >= 16) {
+    messageList.value.shift()
+  }
 })
 const showMessage = ref(true)
-const timer = ref<null | NodeJS.Timeout>(null)
 //鼠标离开之后开始计时
-const startTimerFn = () => {
-  // // 时间大于0，开启倒计时，否则就是无限时间
-  // if (props.duration > 0) {
-  //       timer.value = setTimeout(() => {
-  //         close(); // 倒计时结束，隐藏弹窗
-  //       }, props.duration);
-  //     }
+const startTimerFn = (item,index) => {
+  // 时间大于0，开启倒计时，否则就是无限时间
+  if (item.duration > 0) {
+        timerList.value![index] = setTimeout(() => {
+          messageList.value.splice(0, 1);
+        }, item.duration);
+      }
 }
 //鼠标进入之后停止计时
-const clearTimerFn = () => {
-  // clearTimeout(Number(timer.value))
+const clearTimerFn = (index) => {
+  clearTimeout(Number(timerList.value![index]))
 }
-// 隐藏弹窗  会触发上面的handleAfterLeave函数
+// 
 const close = () => {
   showMessage.value = false
 }
@@ -116,45 +110,17 @@ $backgroundColors: (
   border-radius: 5px;
   padding: 0 15px;
   margin-top: 20px;
-  animation: messageShow .5s;
-  animation-fill-mode: forwards;
-  animation-iteration-count:1; /*动画只执行一次*/
 }
 
-.messageHide {
-        animation: messageHide .2s linear;
-        animation-fill-mode: forwards;
-    }
-// @keyframes messageShow {
-//     0% {
-//         transform: translateY(-50px);
-//         opacity: 0;
-//     }
-//     100% {
-//         transform: translateY(0);
-//         opacity: 1;
-//     }
-// }
-
-// @keyframes messageHide {
-//     0% {
-//         transform: translateY(0);
-//         opacity: 1;
-//     }
-//     100% {
-//         transform: translateY(-50px);
-//         opacity: 0;
-//     }
-// }
 .list-move,
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
 }
-.list-enter-from,
-.list-leave-to {
+.list-leave-to ,
+.list-enter-from{
   opacity: 0;
-  transform: translateY(-50px);
+  transform: translate(0,-50px);
 }
 .list-leave-active {
   position: absolute;

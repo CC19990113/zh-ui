@@ -1,6 +1,6 @@
 
 <template>
-<button @click="aa">123</button>
+<zh-button @click="aa" type="success">success</zh-button>
 </template>
 
 <script setup>
