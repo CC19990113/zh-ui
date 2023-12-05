@@ -1,78 +1,70 @@
 <template>
-   <Transition-group ref="message" name="message-fade" @after-leave="handleAfterLeave">
-    <div :class="ZhClass" @mouseenter="clearTimerFn"
-      @mouseleave="startTimerFn">
-    <span @click="handleAfterLeave">{{props.content}}</span>
+    <div class="zh-message-box">
+      <div
+      v-for="item in messageList"
+      :key="item.id"
+      :class="['zh-message', `zh-message-${item.type}`]"
+      @mouseenter="clearTimerFn"
+      @mouseleave="startTimerFn"
+    >
+    <span>{{item.message}}</span>
   </div>
-</Transition-group>
-
+    </div>
 </template>
 
 <script setup lang="ts">
-import { computed,ref } from 'vue'
-const props = defineProps({
-  // 弹窗类型。枚举四种
-  type: {
-    type: String,
-    default: 'info',
-    validator: (value:string) => {
-      return ["info", "success", "warning","danger"].includes(value);
-    }
-  },
-  // 弹窗内容
-  content: {
-    type: String,
-    default: 'messagesdsddsfsdfsdfsdfdsfdsfdsf'
-  },
-  // 弹窗延迟
-  duration: {
-    type: Number,
-    default:-1
-  },
-})
-const ZhClass = computed(() => {
-  return ['zh-message', `zh-message-${props.type}`]
-})
-const info = (options)=>{initMessage(options,'info')}
-const success = (options)=>{initMessage(options,'success')}
-const warning = (options)=>{initMessage(options,'warning')}
-const danger = (options)=>{initMessage(options,'danger')}
-const initMessage = (options, type = 'info') => {
+import { ref, watch } from 'vue'
+type Option = {type:string,message:string,id:number}
+setInterval(() => {
+  // success({})
+  // console.log(messageList.value.length);
+}, 2000);
+const messageList = ref([] as Option[])
+const info = (options:Option)=>{initMessage(options,'info')}
+const success = (options:Option)=>{initMessage(options,'success')}
+const warning = (options:Option)=>{initMessage(options,'warning')}
+const danger = (options:Option)=>{initMessage(options,'danger')}
+const initMessage = (options:Option, type = 'info') => {
   let option = options || {}
   option.type = type
   const config = {
     type: option.type,
     message: option.message || 'message',
+    id: +new Date().getTime()
   }
+  messageList.value.push(config)
 }
+watch(() => messageList.value.length, () => {
+  console.log(messageList.value.length);
+  // if (messageList.value.length >= 3) {
+    // messageList.value.shift()
+  // }
+})
 const showMessage = ref(true)
 const timer = ref<null | NodeJS.Timeout>(null)
-const message = ref() // 当前组件实例
-// 过渡消失离开之后
-const handleAfterLeave = () => {
-  // 销毁当前实例
-  // console.log(message.value);
-  
-  // message.value.$distroy()
-}
 //鼠标离开之后开始计时
 const startTimerFn = () => {
-  // 时间大于0，开启倒计时，否则就是无限时间
-  if (props.duration > 0) {
-        timer.value = setTimeout(() => {
-          close(); // 倒计时结束，隐藏弹窗
-        }, props.duration);
-      }
+  // // 时间大于0，开启倒计时，否则就是无限时间
+  // if (props.duration > 0) {
+  //       timer.value = setTimeout(() => {
+  //         close(); // 倒计时结束，隐藏弹窗
+  //       }, props.duration);
+  //     }
 }
 //鼠标进入之后停止计时
 const clearTimerFn = () => {
-  clearTimeout(Number(timer.value))
+  // clearTimeout(Number(timer.value))
 }
 // 隐藏弹窗  会触发上面的handleAfterLeave函数
 const close = () => {
   showMessage.value = false
 }
-
+defineExpose({
+  info,
+  success,
+  warning,
+  danger
+})
 </script>
 
 <style lang="scss" scoped>
@@ -98,6 +90,12 @@ $backgroundColors: (
     background-color: $value;
   }
 }
+.zh-message-box {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
 .zh-message{
   max-width: 1200px;
   min-width: 100px;
@@ -106,6 +104,9 @@ $backgroundColors: (
   line-height: 40px;
   border-radius: 5px;
   padding: 0 15px;
+  margin-top: 20px;
+  animation: messageShow .5s;
+  animation-fill-mode: forwards;
 }
 
 // 过渡效果样式
@@ -114,5 +115,27 @@ $backgroundColors: (
   opacity: 0;
   -webkit-transform: translate(-50%, -100%);
   transform: translate(-50%, -100%);
+}
+
+@keyframes messageShow {
+    0% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes messageHide {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
 }
 </style>
