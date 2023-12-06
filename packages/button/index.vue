@@ -61,15 +61,18 @@ const props = defineProps({
 })
 console.log('===>', props)
 const ZhClass = computed(() => {
-  const classList = ['zh-button', `zh-button-${props.type}`, `zh-button-${props.size}`]
-  if (props.round) {
-    classList.push('zh-button-round')
+  const { type, size, round, disabled } = props;
+  const classList = ['zh-button', `zh-button-${type}`, `zh-button-${size}`];
+
+  if (round) {
+    classList.push('zh-button-round');
   }
-  if (props.disabled) {
-    classList.push('zh-button-disabled')
+  if (disabled) {
+    classList.push('zh-button-disabled');
   }
-  return classList
-})
+
+  return classList;
+});
 </script>
 
 <style lang="scss" scoped>
